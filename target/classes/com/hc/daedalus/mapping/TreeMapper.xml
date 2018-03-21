@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hc.daedalus.dao.TreeMapper">
+  <resultMap id="BaseResultMap" type="com.hc.daedalus.model.Tree">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="pid" jdbcType="INTEGER" property="pid" />
+    <result column="text" jdbcType="VARCHAR" property="text" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, pid, text, url
+  </sql>
+  
+  <!-- 获取子节点的数量 -->
+  <select id="countSecondTree" parameterType="java.lang.Integer" resultType="string">
+  	select count(*) from tree where pid = #{pid}
+  </select>
+  <!-- 查找一级菜单 -->
+  <select id="getListByNull" resultMap="BaseResultMap">
+  	select
+ 	<include refid="Base_Column_List" />
+    from tree
+    where pid is null
+  </select>
+  <!-- 查找二级菜单 -->
+  <select id="getListByPid" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  	select
+ 	<include refid="Base_Column_List" />
+    from tree
+    where pid=#{pid}
+  </select>
+  
+  
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tree
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from tree
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hc.daedalus.model.Tree">
+    insert into tree (id, pid, text, 
+      url)
+    values (#{id,jdbcType=INTEGER}, #{pid,jdbcType=INTEGER}, #{text,jdbcType=VARCHAR}, 
+      #{url,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hc.daedalus.model.Tree">
+    insert into tree
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="pid != null">
+        pid,
+      </if>
+      <if test="text != null">
+        text,
+      </if>
+      <if test="url != null">
+        url,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="pid != null">
+        #{pid,jdbcType=INTEGER},
+      </if>
+      <if test="text != null">
+        #{text,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hc.daedalus.model.Tree">
+    update tree
+    <set>
+      <if test="pid != null">
+        pid = #{pid,jdbcType=INTEGER},
+      </if>
+      <if test="text != null">
+        text = #{text,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hc.daedalus.model.Tree">
+    update tree
+    set pid = #{pid,jdbcType=INTEGER},
+      text = #{text,jdbcType=VARCHAR},
+      url = #{url,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
